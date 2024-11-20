@@ -89,7 +89,7 @@ const PaymentAddress = () => {
                 currency: "INR",
                 order_id: initiateId.id,
                 prefill: {
-                    contact: "8446414152"
+                    contact: "9898989898"
                 },
                 handler: response => {
                     payMoneyTrigger({ ...response, cartId: data._id, address: formik.values })

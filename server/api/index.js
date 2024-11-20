@@ -16,12 +16,13 @@ app.use(express.json())
 app.use(cookieParser())
 
 const corsOptions = {
-    origin: (origin, callback) => {
-        // Allow requests with no origin, like mobile apps or curl requests
+    origin: "https://food-master-main-eta.vercel.app",
+    // (origin, callback) => {
+    //     // Allow requests with no origin, like mobile apps or curl requests
 
-        if (!origin) return callback(null, true);
-        callback(null, true);
-    },
+    //     if (!origin) return callback(null, true);
+    //     callback(null, true);
+    // },
     credentials: true
 };
 
