@@ -9,7 +9,7 @@ require("dotenv").config({ path: "./.env" })
 mongoose.connect(process.env.MONGO_URL)
 
 const app = express()
-app.use(express.static(path.join(__dirname, "dist")))
+// app.use(express.static(path.join(__dirname, "dist")))
 app.use(express.static("users"))
 app.use(express.static("dishes"))
 app.use(express.json())
@@ -36,8 +36,8 @@ app.use("/api/user", userProtected, require("./routes/userRoute"))
 
 app.use("*", (req, res) => {
     console.log('Wildcard');
-    res.sendFile(path.join(__dirname, "dist", "index.html"))
-    // res.status(404).json({ message: "No resource found" })
+    // res.sendFile(path.join(__dirname, "dist", "index.html"))
+    res.status(404).json({ message: "No resource found" })
 })
 
 app.use((err, req, res, next) => {
