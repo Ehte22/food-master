@@ -1,0 +1,16 @@
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+    background-color: hsla(234, 38%, 18%, 0.8);
+    width: 10px;
+    border-radius: 100;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: orange;
+    border-radius: 10px;
+}
