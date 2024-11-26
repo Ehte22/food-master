@@ -72,7 +72,7 @@ const AdminOrders = () => {
                                             <TableCell>{i + 1}</TableCell>
                                             <TableCell>{item.cartId.dishes.map(d => <Box>
 
-                                                <img style={{ borderRadius: 10 }} height={70} src={`${import.meta.env.VITE_URL}/${d.hero}`} alt="" />
+                                                <img style={{ borderRadius: 10 }} height={70} src={d.hero} alt="" />
                                             </Box>)}</TableCell>
                                             <TableCell>{item.userId.name}</TableCell>
                                             <TableCell>{TotalAmount} {item.mode === "pay" ? "Online" : "COD"}</TableCell>

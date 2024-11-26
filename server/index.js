@@ -16,14 +16,8 @@ app.use(express.json())
 app.use(cookieParser())
 
 const corsOptions = {
-    // origin: process.env.FRONTEND_URL,
-    origin: process.env.FRONTEND_URL,
-    // (origin, callback) => {
-    //     // Allow requests with no origin, like mobile apps or curl requests
-
-    //     if (!origin) return callback(null, true);
-    //     callback(null, true);
-    // },
+    // origin: "http://localhost:5173",
+    origin: "https://food-master-ten.vercel.app",
     credentials: true
 };
 

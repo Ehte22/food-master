@@ -216,7 +216,7 @@ const PaymentAddress = () => {
                                                     <Box sx={{}}>
                                                         {
                                                             data.dishes.map((item, i) => <Box>
-                                                                <img style={i % 2 !== 0 ? { borderRadius: 8, marginLeft: 100 } : { borderRadius: 8 }} src={`${import.meta.env.VITE_URL}/${item.hero}`} width={100} height={100} alt="" />
+                                                                <img style={i % 2 !== 0 ? { borderRadius: 8, marginLeft: 100 } : { borderRadius: 8 }} src={item.hero} width={100} height={100} alt="" />
                                                             </Box>)
                                                         }
                                                     </Box>

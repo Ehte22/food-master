@@ -12,10 +12,6 @@ const Order = require("../model/Order")
 const Auth = require("../model/Auth")
 
 
-
-
-
-
 exports.getProduct = asyncHandler(async (req, res) => {
     const { productId } = req.params
     const result = await Dish.findById(productId)

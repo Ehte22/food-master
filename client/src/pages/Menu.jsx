@@ -81,12 +81,12 @@ const Menu = () => {
         <Box sx={{ marginX: "6vw", marginY: "3rem" }}>
             <Grid container spacing={5}>
                 {
-                    data && data.map(item => <Grid item md={6} xs={12}>
+                    data && data.map(item => <Grid key={item._id} item md={6} xs={12}>
                         <Link style={{ textDecoration: "none", color: "black" }}
                             to={`/details/${item._id}`}
                         >
                             <Box sx={{ display: "flex", cursor: "pointer", marginTop: 3 }}>
-                                <Avatar src={`${import.meta.env.VITE_URL}/${item.hero}`} sx={{ borderRadius: 0.9, width: "6rem", height: "5.5rem" }} />
+                                <Avatar src={item.hero} sx={{ borderRadius: 0.9, width: "6rem", height: "5.5rem" }} />
                                 <Box sx={{ marginLeft: "2vw", width: { xs: "100%", md: "100%" } }} >
                                     <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                                         <Typography sx={{ fontSize: "1.6rem", fontWeight: "bold" }}>{item.name}</Typography>

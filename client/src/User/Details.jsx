@@ -86,7 +86,7 @@ const Details = () => {
 
                 <Grid sx={{ my: 10, px: { xs: 2, sm: 5 } }} container >
                     <Grid xs={12} sm={6}  >
-                        <Box sx={{ height: { sm: "100%", xs: "40vh" }, width: { xs: "80vw", sm: "80%" }, borderRadius: 2, backgroundSize: "cover", backgroundPosition: "100% 100%", backgroundImage: `url(${import.meta.env.VITE_URL}/${data.hero})` }} >
+                        <Box sx={{ height: { sm: "100%", xs: "40vh" }, width: { xs: "80vw", sm: "80%" }, borderRadius: 2, backgroundSize: "cover", backgroundPosition: "100% 100%", backgroundImage: `url(${data.hero})` }} >
                             {/* <img src={`${import.meta.env.VITE_URL}/${data.hero}`} style={{ maxWidth: 500, borderRadius: 4, maxHeight: 500 }} alt="" /> */}
                         </Box>
                     </Grid>
@@ -125,7 +125,7 @@ const Details = () => {
                                     <Stack sx={{ my: 2 }} width={"100%"} gap={1} flexWrap={'wrap'} direction={"row"}>
                                         {addedItem.map(item => <>
                                             <Box sx={{ display: "flex", gap: 0.3, borderRadius: 10, bgcolor: "black", color: "white", px: 0.5, alignItems: "center", py: 0.1 }} >
-                                                <Typography><img height={30} width={30} style={{ borderRadius: 10 }} src={`${import.meta.env.VITE_URL}/${item.hero}`} alt="" /></Typography>
+                                                <Typography><img height={30} width={30} style={{ borderRadius: 10 }} src={item.hero} alt="" /></Typography>
                                                 <Typography sx={{ fontSize: 13 }} >{item.name}</Typography>
                                                 <IconButton onClick={e => setAddedItem(addedItem.filter(d => d._id !== item._id))} >
                                                     <CancelIcon sx={{ color: "white", fontSize: 15 }} />
@@ -162,9 +162,9 @@ const Details = () => {
                     <List sx={{ width: "100%", overflowY: "scroll", height: "85%" }}>
 
                         {
-                            allDishData && allDishData.map(item => (item._id !== id) && <ListItem ListItem sx={{ color: "white", width: "100%" }} >
+                            allDishData && allDishData.map(item => (item._id !== id) && <ListItem key={item._id} ListItem sx={{ color: "white", width: "100%" }} >
                                 <Stack direction={"row"} alignItems={"center"} gap={2} sx={{ width: "100%" }} >
-                                    <Typography><img src={`${import.meta.env.VITE_URL}/${item.hero}`} width={70} height={70} style={{ borderRadius: 7 }} alt="" /></Typography>
+                                    <Typography><img src={item.hero} width={70} height={70} style={{ borderRadius: 7 }} alt="" /></Typography>
                                     <Typography sx={{ fontWeight: 600 }} >{item.name}</Typography>
                                     {/* <Stack direction={"row"} >
                                         <Button>-</Button>

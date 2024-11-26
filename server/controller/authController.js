@@ -5,11 +5,12 @@ const jwt = require("jsonwebtoken")
 const Auth = require("../model/Auth")
 const { OAuth2Client } = require("google-auth-library")
 const profileUpload = require("../utils/profileUpload")
+const cloudinary = require('../utils/uploadConfig')
 
 exports.registerUser = asyncHandler(async (req, res) => {
-    profileUpload(req, res, async (err) => {
-        const { email, password, name } = req.body
 
+    profileUpload(req, res, async err => {
+        const { email, password, name } = req.body
         if (validator.isEmpty(email) || validator.isEmpty(password) || validator.isEmpty(name)) {
             return res.status(400).json({ message: "All field are required" })
         }
@@ -24,11 +25,13 @@ exports.registerUser = asyncHandler(async (req, res) => {
 
         const hashPass = await bcrypt.hash(password, 10)
         // createUser
-        console.log("req.file", req.file);
-        const createUser = await Auth.create({ name, email, password: hashPass, user: req.file.filename || "asassa", role: "user" })
+
+        const { secure_url } = await cloudinary.uploader.upload(req.file.path)
+
+        const createUser = await Auth.create({ name, email, password: hashPass, user: secure_url || "asassa", role: "user" })
         const token = jwt.sign({ id: createUser._id }, process.env.JWT_KEY, { expiresIn: "7d" })
         res.cookie("user", token)
-        res.status(201).json({ message: "Register Success", result: { name, email, _id: createUser._id, user: req.file.filename } })
+        res.status(201).json({ message: "Register Success", result: { name, email, _id: createUser._id, user: createUser.user } })
     })
 
 })
@@ -55,7 +58,7 @@ exports.loginUser = asyncHandler(async (req, res) => {
             return res.status(400).json({ message: "Oh owner, Wrong password" })
         }
         const token = jwt.sign({ id: result._id }, process.env.JWT_KEY, { expiresIn: "7d" })
-        res.cookie("admin", token, { maxAge: 1000 * 60 * 60 * 24 })
+        res.cookie("admin", token, { maxAge: 1000 * 60 * 60 * 24, httpOnly: true, secure: true, sameSite: "none" })
         return res.status(201).json({ message: "Admin Login Success", result: { name: result.name, email: result.email, _id: result._id, user: result.user, role: "admin" } })
     }
 
@@ -65,7 +68,7 @@ exports.loginUser = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: "Wrong password" })
     }
     const token = jwt.sign({ id: result._id }, process.env.JWT_KEY, { expiresIn: "7d" })
-    res.cookie("user", token, { maxAge: 1000 * 60 * 60 * 2, httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "none" })
+    res.cookie("user", token, { maxAge: 1000 * 60 * 60 * 2, httpOnly: true, })
     res.status(201).json({ message: "Login Success", result: { name: result.name, email: result.email, _id: result._id, user: result.user, role: "user" } })
 })
 
@@ -80,13 +83,7 @@ exports.logOut = asyncHandler(async (req, res) => {
     res.status(200).json({ message: "Log Out success" })
 })
 
-
-
-
-
-// continueWithGoofle
-
-
+// continueWithGoogle
 exports.continueWithGoogle = asyncHandler(async (req, res) => {
     const { credential } = req.body
 
@@ -103,7 +100,7 @@ exports.continueWithGoogle = asyncHandler(async (req, res) => {
         if (!picture) {
             const userData = await Auth.create({ name, email, user: "dummy.jpg", role: "user", active: true })
             const token = jwt.sign({ id: userData._id }, process.env.JWT_KEY, { expiresIn: "7d" })
-            res.cookie("user", token, { maxAge: 1000 * 60 * 60 * 24 })
+            res.cookie("user", token, { maxAge: 1000 * 60 * 60 * 24, httpOnly: true, secure: true, sameSite: "none" })
             return res.status(200).json({ message: "Register success", result: { name, email, _id: userData._id, user: "dummy.jpg", role: "user" } })
         }
         const userData = await Auth.create({ name, email, user: picture, role: "user", active: true })
@@ -112,14 +109,11 @@ exports.continueWithGoogle = asyncHandler(async (req, res) => {
         return res.status(200).json({ message: "Login success", result: { name, email, _id: userData._id, user: picture, role: "user" } })
     } else {
         const token = jwt.sign({ id: result._id }, process.env.JWT_KEY, { expiresIn: "7d" })
-        res.cookie("user", token, { maxAge: 1000 * 60 * 60 * 24, httpOnly: true })
+        res.cookie("user", token, { maxAge: 1000 * 60 * 60 * 24, httpOnly: true, secure: true, sameSite: "none" })
         res.json({
             message: "login  success",
             result: { name: result.name, email: result.email, _id: result._id, user: result.user, role: "user" }
         })
     }
-
-
-
 
 })

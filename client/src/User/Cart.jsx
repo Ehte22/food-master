@@ -7,6 +7,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { useGetUsercartQuery, useUpdateUsercartMutation } from '../redux/apis/userApi'
 import { json, useNavigate, useParams } from 'react-router-dom'
 import { useUpdateDishMutation } from '../redux/apis/adminApi'
+import { interpolate } from 'framer-motion'
 
 
 
@@ -81,7 +82,7 @@ const Cart = () => {
                                         <Stack justifyContent={"space-between"} direction={{ xs: "row", sm: "row" }} alignItems={"center"}>
                                             <Stack gap={2} direction={"row"} alignItems={"center"} >
                                                 <Box sx={{ display: { xs: "none", sm: "block" } }} >
-                                                    <img src={`${import.meta.env.VITE_URL}/${item.hero}`} height={70} width={60} alt="" />
+                                                    <img src={item.hero} height={70} width={60} alt="" />
                                                 </Box>
                                                 <Box>
                                                     <Typography sx={{ fontFamily: "poppins", fontSize: 19, fontWeight: 600, color: "white" }}>{item.name}</Typography>

@@ -4,6 +4,7 @@ const fs = require("fs/promises")
 const path = require("path")
 const dishUpload = require("../utils/dishUpload")
 const { Dish } = require("../model/Dish")
+const cloudinary = require('../utils/uploadConfig')
 
 
 exports.getAllDishes = asyncHandler(async (req, res) => {
@@ -14,17 +15,15 @@ exports.getAllDishes = asyncHandler(async (req, res) => {
 
 exports.addDishe = asyncHandler(async (req, res) => {
 
-
-    const { name, price, desc, hero } = req.body
-
-    dishUpload(req, res, async (err) => {
+    dishUpload(req, res, async err => {
         if (err) {
-            return res.status(400).json({ message: err.message || "unable to upload img " })
+            return res.status(400).json({ message: err.message || 'Upload error' })
         }
-        console.log(req.body.desc);
-        const imgName = req.file.filename
-        await Dish.create({ name: req.body.name, desc: req.body.desc, price: req.body.price, hero: imgName, class: req.body.class })
-        res.status(201).json({ message: "dish add success" })
+
+        const { secure_url } = await cloudinary.uploader.upload(req.file.path)
+
+        await Dish.create({ ...req.body, hero: secure_url })
+        res.status(201).json({ message: 'Dish Add Successfully' })
     })
 })
 
@@ -42,10 +41,14 @@ exports.deleteDish = asyncHandler(async (req, res) => {
         res.status(400).json({ message: "provide valid id" })
     }
 
-    await fs.unlink(path.join(__dirname, "..", "dishes", result.hero))
+    if (result.hero) {
+        const ImageId = result.hero.split('/').pop().split('.')[0];
+        await cloudinary.uploader.destroy(ImageId);
+    }
 
-    await Dish.findByIdAndDelete(dishId)
-    res.json({ message: "Dish delete success" })
+    await Dish.findByIdAndDelete(dishId);
+
+    res.status(200).json({ message: 'Dish Delete Successfully' })
 })
 
 
@@ -53,22 +56,40 @@ exports.deleteDish = asyncHandler(async (req, res) => {
 exports.updateDish = asyncHandler(async (req, res) => {
 
     dishUpload(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ message: 'File upload failed', error: err.message });
+        }
 
         const { dishId } = req.params
 
-        if (req.file) {
-            if (err) {
-                return res.status(400).json({ message: err.message })
-            }
-            const result = await Dish.findById(dishId)
-            await fs.unlink(path.join(__dirname, "..", "dishes", result.hero))
-            await Dish.findByIdAndUpdate(dishId, { ...req.body, hero: req.file.filename })
-            return res.json({ message: "Dish update success" })
+        const dish = await Dish.findById(dishId);
+        if (!dish) {
+            return res.status(404).json({ message: 'Dish not found' });
         }
 
-        await Dish.findByIdAndUpdate(dishId, req.body)
-        res.json({ message: "Dish update success" })
-    })
+        let imageUrl
+
+        if (req.file) {
+            const file = req.file
+
+            try {
+                const publicId = dish.hero.split('/').pop().split('.')[0];
+                await cloudinary.uploader.destroy(publicId);
+
+                const { secure_url } = await cloudinary.uploader.upload(file.path);
+
+                imageUrl = secure_url;
+            } catch (error) {
+                return res.status(500).json({ message: 'Failed to upload new image', error: error.message });
+            }
+        }
+        await Dish.findByIdAndUpdate(
+            dishId,
+            { ...req.body, hero: imageUrl },
+        );
+
+        res.status(200).json({ message: 'Dish Update Successfully' });
+    });
 
 
 })

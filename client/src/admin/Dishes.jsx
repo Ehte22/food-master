@@ -315,13 +315,14 @@ const Dishes = () => {
                     <Grid container justifyContent={{ xs: "center", sm: "normal" }} alignItems={"center"}  >
 
                         {
-                            data && data.map(item => <Grid my={3} lg={4} md={6} sm={12} >
+                            data && data.map((item, i) => <Grid key={i} my={3} lg={4} md={6} sm={12} >
                                 <Card sx={{ maxWidth: { xs: 400, sm: 300 }, borderRadius: 2 }}>
                                     <Box
                                         sx={{
                                             height: "250px", width: "300px",
                                             backgroundSize: "100% 100%",
-                                            backgroundImage: `url(${import.meta.env.VITE_URL}/${item.hero})`
+                                            // backgroundImage: `url(${import.meta.env.VITE_URL}/${item.hero})`
+                                            backgroundImage: `url(${item.hero})`
                                         }}
                                     >
                                         <Box sx={{ textAlign: "end" }}>
