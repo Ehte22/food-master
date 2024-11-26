@@ -68,7 +68,7 @@ exports.loginUser = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: "Wrong password" })
     }
     const token = jwt.sign({ id: result._id }, process.env.JWT_KEY, { expiresIn: "7d" })
-    res.cookie("user", token, { maxAge: 1000 * 60 * 60 * 2, httpOnly: true, })
+    res.cookie("user", token, { maxAge: 1000 * 60 * 60 * 2, httpOnly: true, secure: true, sameSite: "none" })
     res.status(201).json({ message: "Login Success", result: { name: result.name, email: result.email, _id: result._id, user: result.user, role: "user" } })
 })
 
