@@ -30,7 +30,7 @@ exports.registerUser = asyncHandler(async (req, res) => {
 
         const createUser = await Auth.create({ name, email, password: hashPass, user: secure_url || "asassa", role: "user" })
         const token = jwt.sign({ id: createUser._id }, process.env.JWT_KEY, { expiresIn: "7d" })
-        res.cookie("user", token)
+        res.cookie("user", token, { maxAge: 1000 * 60 * 60 * 24, httpOnly: true, secure: true, sameSite: "none" })
         res.status(201).json({ message: "Register Success", result: { name, email, _id: createUser._id, user: createUser.user } })
     })
 
